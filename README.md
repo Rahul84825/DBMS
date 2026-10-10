@@ -8,26 +8,50 @@ Developed as an academic Database Management System (DBMS) mini-project, this ap
 
 ## Table of Contents
 
-1. [Project Overview](#project-overview)
-2. [Why the Name "Smart Farm Database Management System" Fits](#why-the-name-smart-farm-database-management-system-fits)
-3. [Key Features](#key-features)
-4. [Why This Is a Strong DBMS Mini-Project](#why-this-is-a-strong-dbms-mini-project)
-5. [DBMS Concepts Demonstrated](#dbms-concepts-demonstrated)
-6. [System Architecture](#system-architecture)
-7. [Database Design](#database-design)
-8. [Technology Stack](#technology-stack)
-9. [Project Folder Structure](#project-folder-structure)
-10. [Installation and Local Setup](#installation-and-local-setup)
-11. [Environment Variables](#environment-variables)
-12. [API Documentation](#api-documentation)
-13. [Running the Python Sensor Simulator](#running-the-python-sensor-simulator)
-14. [Testing and Verification](#testing-and-verification)
-15. [Deployment](#deployment)
-16. [Security and Data Safety](#security-and-data-safety)
-17. [Limitations and Future Enhancements](#limitations-and-future-enhancements)
-18. [Viva Demonstration Guide](#viva-demonstration-guide)
-19. [Academic Value and Conclusion](#academic-value-and-conclusion)
-20. [License and Contribution](#license-and-contribution)
+1. [⚡ Quick Setup (3-Minute Run)](#-quick-setup-3-minute-run)
+2. [Project Overview](#project-overview)
+3. [Why the Name "Smart Farm Database Management System" Fits](#why-the-name-smart-farm-database-management-system-fits)
+4. [Key Features](#key-features)
+5. [Why This Is a Strong DBMS Mini-Project](#why-this-is-a-strong-dbms-mini-project)
+6. [DBMS Concepts Demonstrated](#dbms-concepts-demonstrated)
+7. [System Architecture](#system-architecture)
+8. [Database Design](#database-design)
+9. [Technology Stack](#technology-stack)
+10. [Project Folder Structure](#project-folder-structure)
+11. [Complete Setup and Local Run Guide](#complete-setup-and-local-run-guide)
+12. [Environment Variables](#environment-variables)
+13. [API Documentation](#api-documentation)
+14. [Running the Python Sensor Simulator](#running-the-python-sensor-simulator)
+15. [Testing and Verification](#testing-and-verification)
+16. [Deployment](#deployment)
+17. [Security and Data Safety](#security-and-data-safety)
+18. [Limitations and Future Enhancements](#limitations-and-future-enhancements)
+19. [Viva Demonstration Guide](#viva-demonstration-guide)
+20. [Academic Value and Conclusion](#academic-value-and-conclusion)
+21. [License and Contribution](#license-and-contribution)
+
+---
+
+## ⚡ Quick Setup (3-Minute Run)
+
+If MySQL 8 is already running and `smart_farm_db` is initialized, launch the full-stack system in two terminals:
+
+```powershell
+# Terminal 1 — Start Node.js / Express REST API (Port 5000)
+cd backend
+npm install
+npm run dev
+
+# Terminal 2 — Start React 19 / Vite Frontend SPA (Port 5173)
+cd frontend
+npm install
+npm run dev
+```
+
+Open your browser to **`http://localhost:5173`**.  
+The top navigation header will display a green pill badge: **`● MySQL 8.x Connected`**.
+
+> 💡 *For first-time database creation, MySQL Workbench steps, `.env` details, and troubleshooting, see the [Complete Setup and Local Run Guide](#complete-setup-and-local-run-guide) below.*
 
 ---
 
@@ -434,21 +458,29 @@ DBMS- Project/
 
 ---
 
-## Installation and Local Setup
+## Complete Setup and Local Run Guide
 
-### Prerequisites
-- **Node.js** v18+ or v24+ and **npm**
-- **MySQL Server 8.x** running locally on port `3306`
-- **MySQL Workbench** or MySQL Command Line Client
-- **Python 3.10+** (standard library only; required only if regenerating telemetry)
-- **Git**
+### 1. System Prerequisites & Verification
 
-> ⚠️ **Database Safety Warning:**  
-> The SQL scripts in `sql/` use `CREATE TABLE IF NOT EXISTS` and `INSERT IGNORE`. They are designed for initial database creation. If your database already contains populated records, do not drop or recreate tables.
+Before starting, verify that the required software runtimes are installed on your machine:
+
+```powershell
+node -v          # Recommended: Node.js v18.x, v20.x, or v24.x
+npm -v           # Recommended: npm v9.x or v10.x+
+mysql --version  # Recommended: MySQL Server 8.0.x or 8.4 LTS
+python --version # Optional: Python 3.10+ (for synthetic telemetry generator)
+git --version    # Git version control
+```
+
+> ⚠️ **Database Safety Principle:**  
+> The SQL scripts in `sql/` use `CREATE TABLE IF NOT EXISTS` and `INSERT IGNORE`. They are intended for initial database setup. If your MySQL server already contains `smart_farm_db` with populated tables, **do not drop or recreate tables**. Skip Step 3 and proceed directly to starting the backend.
 
 ---
 
-### Step 1: Clone the Repository
+### 2. Step 1: Clone the Repository
+
+Clone the project to your local directory and enter the workspace:
+
 ```powershell
 git clone https://github.com/Rahul84825/DBMS.git
 cd DBMS
@@ -456,11 +488,15 @@ cd DBMS
 
 ---
 
-### Step 2: Initialize the Database (First-Time Setup Only)
-Open MySQL Command Line Client or PowerShell:
+### 3. Step 2: Initialize MySQL Database (First-Time Only)
+
+You can initialize the database using either the command line or the MySQL Workbench graphical interface.
+
+#### Method A: Command Line / PowerShell
+Run the four SQL initialization scripts in sequence:
 
 ```powershell
-# 1. Create database schema, tables, constraints, and indexes
+# 1. Create database schema, 9 tables, constraints, and indexes
 mysql -u root -p < "sql\01_schema.sql"
 
 # 2. Seed initial demonstration master data
@@ -473,44 +509,126 @@ mysql -u root -p smart_farm_db < "sql\04_simulated_readings.sql"
 mysql -u root -p smart_farm_db < "sql\03_reports.sql"
 ```
 
----
-
-### Step 3: Configure and Start the Backend
-```powershell
-cd backend
-
-# Install dependencies
-npm install
-
-# Copy environment template
-cp .env.example .env
-
-# Edit .env and set your local MySQL password:
-# DB_PASSWORD=your_actual_password
-
-# Start backend in development mode
-npm run dev
-```
-The backend API starts at **`http://localhost:5000`**.  
-Verify health by visiting `http://localhost:5000/api/health` in your browser.
+#### Method B: MySQL Workbench GUI
+1. Open **MySQL Workbench** and connect to your local MySQL instance (`localhost:3306`).
+2. Go to **File $\rightarrow$ Open SQL Script...** and select `sql/01_schema.sql`. Click the lightning bolt icon (⚡) to execute.
+3. Open and execute `sql/02_sample_data.sql`.
+4. Open and execute `sql/04_simulated_readings.sql`.
+5. Open and execute `sql/03_reports.sql`.
+6. Refresh the **SCHEMAS** panel on the left; you should see `smart_farm_db` with 9 tables and 1 view (`v_latest_sensor_readings`).
 
 ---
 
-### Step 4: Configure and Start the Frontend
-In a **new terminal window**:
-```powershell
-cd frontend
+### 4. Step 3: Configure and Start the Backend API
 
-# Install dependencies
-npm install
+1. Navigate to the backend directory and install dependencies:
+   ```powershell
+   cd backend
+   npm install
+   ```
 
-# Copy environment template
-cp .env.example .env
+2. Create your local environment configuration file:
+   ```powershell
+   cp .env.example .env
+   ```
 
-# Start Vite development server
-npm run dev
-```
-The dashboard will open at **`http://localhost:5173`**.
+3. Open `backend/.env` in your text editor and set your local MySQL password:
+   ```env
+   PORT=5000
+   NODE_ENV=development
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_USER=root
+   DB_PASSWORD=your_actual_mysql_password
+   DB_NAME=smart_farm_db
+   DB_CONNECTION_LIMIT=10
+   CORS_ORIGIN=http://localhost:3000,http://localhost:5173
+   DEFAULT_MOISTURE_ALERT_THRESHOLD=30.0
+   ```
+
+4. *(Optional Diagnostic)* Verify database connectivity directly from the terminal:
+   ```powershell
+   node -e "import('./src/config/database.js').then(m => m.checkConnection()).then(r => console.log('Database Check:', r)).catch(e => console.error(e))"
+   ```
+   *Expected Output:* `{ connected: true, message: 'Successfully connected to MySQL Server', database: 'smart_farm_db', version: '8.0.46' }`
+
+5. Start the backend in development mode (with file watching):
+   ```powershell
+   npm run dev
+   ```
+   The API server will listen on **`http://localhost:5000`**.  
+   *Verify API Health:* Open `http://localhost:5000/api/health` in your browser. It should return HTTP 200 with `"status": "healthy"`.
+
+---
+
+### 5. Step 4: Configure and Start the React Frontend
+
+In a **separate terminal window**:
+
+1. Navigate to the frontend directory and install dependencies:
+   ```powershell
+   cd frontend
+   npm install
+   ```
+
+2. Create your local frontend environment file:
+   ```powershell
+   cp .env.example .env
+   ```
+   Ensure `frontend/.env` contains:
+   ```env
+   VITE_API_BASE_URL=http://localhost:5000/api/v1
+   ```
+
+3. Start the Vite development server:
+   ```powershell
+   npm run dev
+   ```
+   The dashboard will be available at **`http://localhost:5173`**.
+
+4. Open your browser to **`http://localhost:5173`**.
+
+---
+
+### 6. Step 5: Post-Setup Verification Checklist
+
+Confirm that all system components are communicating properly:
+
+| Check | Item | Expected Behavior |
+| :---: | :--- | :--- |
+| ✅ | **Database Health Badge** | Top header shows green pill badge: `● MySQL 8.x Connected`. |
+| ✅ | **Dashboard KPIs** | Summary cards show: 2 Farms, 4 Fields, 4 Crops, 6 Sensors, 33 Readings. |
+| ✅ | **Moisture Deficit Alert** | Banner displays active alert for Field #1 / Sensor #1 ($24.50\% < 30.0\%$). |
+| ✅ | **Sensors Page** | Navigating to `/sensors` displays the 6 hardware nodes with type and status. |
+| ✅ | **Analytical Reports** | Navigating to `/reports` renders harvest yields and expense breakdown charts. |
+| ✅ | **CSV Export** | Clicking "Export CSV" on any report downloads a formatted `.csv` file. |
+
+---
+
+### 7. Step 6: Troubleshooting Common Setup Issues
+
+#### Issue 1: `ECONNREFUSED 127.0.0.1:3306`
+- **Cause:** MySQL Server is not currently running on your local machine.
+- **Fix:** Open Windows Services (`services.msc`), locate **MySQL80** (or **MySQL**), right-click and select **Start**. Alternatively, run in an Administrator PowerShell:
+  ```powershell
+  net start MySQL80
+  ```
+
+#### Issue 2: `ER_ACCESS_DENIED_ERROR for user 'root'@'localhost'`
+- **Cause:** The password specified in `backend/.env` does not match your MySQL root password.
+- **Fix:** Edit `backend/.env` and update `DB_PASSWORD` with your actual MySQL password. Save the file; Node `--watch` will restart automatically.
+
+#### Issue 3: `EADDRINUSE: address already in use :::5000` or `:::5173`
+- **Cause:** Another background terminal or application is already using port 5000 or 5173.
+- **Fix:** Terminate the orphaned process, or change `PORT=5001` in `backend/.env` and `VITE_API_BASE_URL=http://localhost:5001/api/v1` in `frontend/.env`.
+
+#### Issue 4: "Cannot set property query of IncomingMessage which has only a getter"
+- **Cause:** Express 5 compatibility issue when middleware attempts to reassign `req.query`.
+- **Status:** **Resolved.** The project middleware ([backend/src/middleware/validate.js](backend/src/middleware/validate.js)) uses `Object.defineProperty` to override properties in compliance with Express 5 prototypes.
+
+#### Issue 5: CORS Policy Error in Browser Console
+- **Cause:** Frontend port mismatch.
+- **Fix:** Verify that `backend/.env` contains `CORS_ORIGIN=http://localhost:3000,http://localhost:5173`. Ensure your browser URL matches one of the allowed origins.
 
 ---
 
