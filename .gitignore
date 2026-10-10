@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment Variables & Secrets (Keep .env.example files tracked)
+.env
+.env.*
+*.env
+!.env.example
+!**/.env.example
+
+# Production & Build Output
+dist/
+**/dist/
+dist-ssr/
+build/
+
+# Logs & Temporary Files
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Python cache & bytecode
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Editor & IDE configurations
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Agent & local assistant directories
+.agents/
+.system_generated/
+.gemini/

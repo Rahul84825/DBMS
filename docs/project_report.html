@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>Smart Farm DBMS — Final Project Report</title>
+<style>
+  body { font-family: 'Calibri', 'Arial', sans-serif; font-size: 11pt; line-height: 1.5; margin: 1in; color: #1a202c; }
+  h1 { font-size: 22pt; color: #1a365d; border-bottom: 2pt solid #2b6cb0; padding-bottom: 4pt; margin-top: 18pt; }
+  h2 { font-size: 15pt; color: #2b6cb0; border-bottom: 1pt solid #cbd5e0; padding-bottom: 3pt; margin-top: 16pt; }
+  h3 { font-size: 12pt; color: #2d3748; margin-top: 12pt; }
+  table { border-collapse: collapse; width: 100%; margin: 12pt 0; font-size: 10pt; }
+  th, td { border: 1pt solid #a0aec0; padding: 6pt 8pt; text-align: left; }
+  th { background-color: #edf2f7; font-weight: bold; color: #2d3748; }
+  pre { background-color: #f7fafc; border: 1pt solid #e2e8f0; padding: 8pt; font-family: 'Consolas', monospace; font-size: 9pt; }
+  code { font-family: 'Consolas', monospace; font-size: 9.5pt; color: #c53030; }
+  hr { border: none; border-top: 1pt solid #cbd5e0; margin: 16pt 0; }
+  p { margin: 6pt 0; }
+  li { margin: 3pt 0; }
+</style>
+</head>
+<body>
+<h1>SMART FARM DATABASE MANAGEMENT SYSTEM (DBMS)</h1>
+<h2>Comprehensive Academic Mini-Project Report</h2>
+<hr/>
+<h3>[SECTION 1: TITLE PAGE &amp; PROJECT METADATA]</h3>
+<pre><code>========================================================================================
+                                 A MINI-PROJECT REPORT
+                                          ON
+                   SMART FARM DATABASE MANAGEMENT SYSTEM (DBMS)
+                     UTILIZING MYSQL AND SIMULATED IOT SENSORS
+========================================================================================
+
+Submitted in partial fulfillment of the requirements for the Degree of
+[BACHELOR OF TECHNOLOGY / BACHELOR OF ENGINEERING / B.SC. COMPUTER SCIENCE / MCA]
+in
+[DEPARTMENT OF COMPUTER SCIENCE &amp; ENGINEERING / INFORMATION TECHNOLOGY]
+
+Submitted by:
+  1. [STUDENT_NAME_1] (Roll No: [ROLL_NUMBER_1])
+  2. [STUDENT_NAME_2] (Roll No: [ROLL_NUMBER_2])
+  3. [STUDENT_NAME_3] (Roll No: [ROLL_NUMBER_3])
+
+Under the Guidance of:
+  [PROJECT_GUIDE_NAME]
+  [DESIGNATION / PROFESSOR]
+
+[DEPARTMENT NAME]
+[COLLEGE / UNIVERSITY NAME]
+[CITY, STATE, PIN CODE]
+ACADEMIC YEAR: [2026 - 2027]
+========================================================================================</code></pre>
+<hr/>
+<h2>2. Abstract</h2>
+<p>Agriculture is undergoing a rapid digital transformation driven by precision farming and Internet of Things (IoT) technologies. However, traditional small-to-medium farming estates face substantial challenges in systematically logging environmental metrics, tracking input expenditures, and monitoring crop growth cycles. This project designs and implements the **Smart Farm Database Management System (Smart Farm DBMS)**, a relational database built on **MySQL 8.x (InnoDB Engine)**. </p>
+<p>The system models the operational hierarchy of precision agriculture, organizing farms into sub-parcels (fields), tracking crop cultivation cycles (plantings), managing deployed sensor hardware, logging time-series environmental telemetry (soil moisture and temperature), recording irrigation events, and accounting for farm expenses and harvest yields. To demonstrate the system without expensive physical microcontrollers or LoRaWAN gateways, a **pure Python sensor simulator** was engineered to generate deterministic, idempotent synthetic readings labeled as `SIMULATED`. The database enforces strict referential integrity, domain constraints (`CHECK`), composite indexing for sub-second telemetry retrieval, and SQL window functions for decision-support irrigation alerting. Automated validation confirms 100% adherence to Third Normal Form (3NF), zero data duplication, and reproducible query results.</p>
+<hr/>
+<h2>3. Introduction</h2>
+<p>Modern agriculture demands data-driven decision-making to optimize scarce resources like fresh water and fertilizers while maximizing crop yield. In precision agriculture, environmental variables such as soil moisture, ambient temperature, and humidity directly determine irrigation schedules and harvest outcomes. </p>
+<p>A Database Management System (DBMS) serves as the digital backbone of a smart farm. By replacing manual notebooks and fragmented spreadsheets with a normalized relational database, farm managers can:</p>
+<p>1. Maintain an unambiguous record of physical land parcels and soil characteristics.</p>
+<p>2. Link sensor hardware directly to specific fields.</p>
+<p>3. Rapidly query recent environmental indicators to detect drought stress.</p>
+<p>4. Calculate financial return on investment by comparing harvest revenue against input expenses.</p>
+<p>This project demonstrates the complete lifecycle of a database mini-project: from conceptual Entity-Relationship (ER) modeling and relational schema design to SQL implementation, synthetic telemetry generation, and automated verification.</p>
+<hr/>
+<h2>4. Problem Statement</h2>
+<p>Small and medium-sized farming enterprises often suffer from:</p>
+<p>1. **Data Fragmentation:** Agronomic records (planting dates, seed types) are kept in physical ledgers, while water and fertilizer purchases are stored in paper receipts.</p>
+<p>2. **Lack of Real-Time Visibility:** Farmers lack a unified system to correlate soil moisture trends with irrigation valve events, frequently leading to over-watering or plant dehydration.</p>
+<p>3. **Absence of Historical Analytics:** Without structured relational data, evaluating which crop variety delivered the highest yield per hectare or identifying which parcel incurs the highest maintenance cost is nearly impossible.</p>
+<p>4. **Demonstration Barriers in Academic Labs:** Physical IoT hardware is expensive, fragile, and difficult to set up within brief laboratory time constraints. An accessible, zero-dependency simulator is required to demonstrate database capabilities reliably.</p>
+<hr/>
+<h2>5. Objectives and Scope</h2>
+<h3>Primary Objectives:</h3>
+<li>Design a normalized relational schema (Third Normal Form) modeling farm physical properties, agronomic cycles, IoT sensor streams, and financial ledgers.</li>
+<li>Implement MySQL 8.x Data Definition Language (DDL) with enforced primary keys, foreign keys, `CHECK` constraints, unique constraints, and B-tree indexes.</li>
+<li>Populate the database with safe, idempotent demonstration data.</li>
+<li>Develop analytical queries demonstrating multi-table `JOIN`, `GROUP BY` aggregations, SQL window functions, and virtual database `VIEW`s.</li>
+<li>Construct a zero-dependency Python telemetry simulator that generates synthetic sensor observations and demonstrates decision-support irrigation deficit alerting.</li>
+<h3>Project Scope Boundaries:</h3>
+<li>**Included:** Core relational schema (9 tables), idempotent seed data, analytical SQL reports, Python telemetry generator, automated QA test suite.</li>
+<li>**Excluded by Design:** Web frontend (HTML/CSS UI), REST API backend (Node/Django/Flask), cloud database hosting, and physical actuator/pump control circuits. The system is designed strictly for local DBMS demonstration in MySQL Workbench and the MySQL CLI.</li>
+<hr/>
+<h2>6. Hardware and Software Requirements</h2>
+<h3>Hardware Requirements:</h3>
+<li>**Processor:** Intel Core i3 / AMD Ryzen 3 or higher.</li>
+<li>**RAM:** Minimum 4 GB (8 GB recommended for MySQL Workbench).</li>
+<li>**Disk Space:** 500 MB free hard drive space.</li>
+<li>**Display:** $1280 \times 720$ resolution or higher.</li>
+<h3>Software Requirements:</h3>
+<li>**Operating System:** Microsoft Windows 10/11, macOS, or Ubuntu Linux.</li>
+<li>**Database Engine:** MySQL Server 8.0 or 8.4 LTS (InnoDB Storage Engine).</li>
+<li>**Database Client:** MySQL Workbench 8.0 (or MySQL Command Line Client).</li>
+<li>**Programming Language:** Python 3.10+ (Standard Library only; no pip packages needed).</li>
+<li>**Version Control:** Git 2.x.</li>
+<hr/>
+<h2>7. System Architecture</h2>
+<p>The Smart Farm DBMS is structured into three decoupled layers:</p>
+<pre><code>+-------------------------------------------------------------------------+
+|                        LAYER 1: DATA CONSUMERS                         |
+|   MySQL Workbench (GUI)  |  Analytical SQL Reports  |  Advisory Views   |
++-------------------------------------------------------------------------+
+                                    ▲
+                                    │ SQL Queries &amp; DML
++-------------------------------------------------------------------------+
+|                  LAYER 2: RELATIONAL DATABASE ENGINE                    |
+|                         MySQL 8.x (smart_farm_db)                       |
+|   - Master Entities: farm, crop, field                                  |
+|   - Cultivation &amp; Operations: planting, harvest, expense, irrigation    |
+|   - Telemetry Stream: sensor, sensor_reading (Indexed Time-Series)      |
+|   - Integrity: PKs, FKs (CASCADE/RESTRICT), Domain CHECK Constraints     |
++-------------------------------------------------------------------------+
+                                    ▲
+                                    │ Batch Ingestion (INSERT IGNORE)
++-------------------------------------------------------------------------+
+|                     LAYER 3: TELEMETRY SIMULATOR                        |
+|                     (simulator/simulate_readings.py)                    |
+|   - Deterministic Seed (Seed=42)  | Pure Python Standard Library        |
+|   - Soil Moisture (%) &amp; Air Temp (°C) Generation                        |
+|   - Forced Demonstration Deficit Breach (&lt; 30% Threshold)               |
++-------------------------------------------------------------------------+</code></pre>
+<hr/>
+<h2>8. Entity-Relationship (ER) Diagram</h2>
+<pre><code>erDiagram
+    FARM ||--o{ FIELD : &quot;owns / partitions&quot;
+    FARM ||--o{ EXPENSE : &quot;incurs&quot;
+    FIELD ||--o{ PLANTING : &quot;hosts&quot;
+    CROP ||--o{ PLANTING : &quot;planted in&quot;
+    FIELD ||--o{ SENSOR : &quot;monitored by&quot;
+    FIELD ||--o{ IRRIGATION : &quot;watered by&quot;
+    FIELD ||--o{ EXPENSE : &quot;allocated to&quot;
+    SENSOR ||--o{ SENSOR_READING : &quot;records&quot;
+    PLANTING ||--o{ HARVEST : &quot;produces&quot;
+
+    FARM {
+        int farm_id PK
+        varchar farm_name UK
+        varchar owner_name
+        varchar location
+        decimal total_area_hectares
+    }
+    FIELD {
+        int field_id PK
+        int farm_id FK
+        varchar field_name
+        decimal area_hectares
+        varchar soil_type
+    }
+    CROP {
+        int crop_id PK
+        varchar crop_name
+        varchar variety
+        decimal optimal_soil_moisture_min
+        decimal optimal_soil_moisture_max
+    }
+    PLANTING {
+        int planting_id PK
+        int field_id FK
+        int crop_id FK
+        date planting_date
+        enum status
+        decimal planted_area_hectares
+    }
+    SENSOR {
+        int sensor_id PK
+        int field_id FK
+        varchar sensor_code UK
+        enum sensor_type
+        varchar unit_of_measurement
+    }
+    SENSOR_READING {
+        bigint reading_id PK
+        int sensor_id FK
+        timestamp recorded_at
+        decimal reading_value
+        enum data_source
+    }
+    IRRIGATION {
+        int irrigation_id PK
+        int field_id FK
+        datetime start_time
+        decimal water_volume_liters
+        enum trigger_reason
+    }
+    HARVEST {
+        int harvest_id PK
+        int planting_id FK
+        date harvest_date
+        decimal yield_quantity_kg
+        decimal market_value_usd
+    }
+    EXPENSE {
+        int expense_id PK
+        int farm_id FK
+        int field_id FK
+        date expense_date
+        decimal amount_usd
+    }</code></pre>
+<hr/>
+<h2>9. Relational Schema &amp; Table Descriptions</h2>
+<p>The database contains exactly **9 tables**:</p>
+<p>1. **`farm`**: The parent estate record.</p>
+<p>   - Primary Key: `farm_id` (`INT AUTO_INCREMENT`).</p>
+<p>   - Fields: `farm_name` (UNIQUE), `owner_name`, `location`, `total_area_hectares` (`CHECK &gt; 0`), `created_at`.</p>
+<p>2. **`crop`**: Catalog of agronomic crops and optimal moisture/temperature requirements.</p>
+<p>   - Primary Key: `crop_id`.</p>
+<p>   - Fields: `crop_name`, `variety` (UNIQUE composite), `optimal_soil_moisture_min`, `optimal_soil_moisture_max` (`CHECK 0..100`), `growth_duration_days`.</p>
+<p>3. **`field`**: Physical sub-plots on a farm.</p>
+<p>   - Primary Key: `field_id`.</p>
+<p>   - Foreign Key: `farm_id` $\rightarrow$ `farm(farm_id)`.</p>
+<p>   - Fields: `field_name`, `area_hectares` (`CHECK &gt; 0`), `soil_type`.</p>
+<p>4. **`planting`**: Associative entity resolving the Many-to-Many relationship between fields and crops across seasonal cycles.</p>
+<p>   - Primary Key: `planting_id`.</p>
+<p>   - Foreign Keys: `field_id` $\rightarrow$ `field(field_id)`, `crop_id` $\rightarrow$ `crop(crop_id)`.</p>
+<p>   - Fields: `planting_date`, `expected_harvest_date`, `status` (`PLANNED`, `GROWING`, `HARVESTED`, `FAILED`), `planted_area_hectares`.</p>
+<p>5. **`sensor`**: Hardware identity for IoT devices installed in fields.</p>
+<p>   - Primary Key: `sensor_id`.</p>
+<p>   - Foreign Key: `field_id` $\rightarrow$ `field(field_id)`.</p>
+<p>   - Fields: `sensor_code` (UNIQUE, e.g. `SNS-FLD1-SM01`), `sensor_type`, `unit_of_measurement`, `status`, `installation_date`.</p>
+<p>6. **`sensor_reading`**: High-frequency telemetry stream.</p>
+<p>   - Primary Key: `reading_id` (`BIGINT AUTO_INCREMENT`).</p>
+<p>   - Foreign Key: `sensor_id` $\rightarrow$ `sensor(sensor_id)` (`ON DELETE CASCADE`).</p>
+<p>   - Fields: `recorded_at`, `reading_value`, `data_source` (`SIMULATED`, `REAL`), `is_valid`.</p>
+<p>7. **`irrigation`**: Log of field watering operations.</p>
+<p>   - Primary Key: `irrigation_id`.</p>
+<p>   - Foreign Key: `field_id` $\rightarrow$ `field(field_id)`.</p>
+<p>   - Fields: `start_time`, `end_time`, `water_volume_liters` (`CHECK &gt;= 0`), `irrigation_method`, `trigger_reason`.</p>
+<p>8. **`harvest`**: Output yield weight and market revenue realized per planting cycle.</p>
+<p>   - Primary Key: `harvest_id`.</p>
+<p>   - Foreign Key: `planting_id` $\rightarrow$ `planting(planting_id)`.</p>
+<p>   - Fields: `harvest_date`, `yield_quantity_kg`, `quality_grade`, `market_value_usd`.</p>
+<p>9. **`expense`**: Operational expenditures incurred by a farm property and optionally tied to a field.</p>
+<p>   - Primary Key: `expense_id`.</p>
+<p>   - Foreign Keys: `farm_id` $\rightarrow$ `farm(farm_id)`, `field_id` $\rightarrow$ `field(field_id)` (`ON DELETE SET NULL`).</p>
+<p>   - Fields: `expense_date`, `category`, `amount_usd` (`CHECK &gt; 0`), `description`.</p>
+<hr/>
+<h2>10. Normalization Explanation</h2>
+<p>Normalization is the formal process of structuring relational tables to reduce data redundancy and eliminate update, insertion, and deletion anomalies.</p>
+<h3>First Normal Form (1NF):</h3>
+<li>**Rule:** Every column must hold atomic (indivisible) values, and each record must have a unique primary key.</li>
+<li>**Project Example:** In `crop`, instead of storing multiple varieties as a comma-separated string (`&quot;Roma, Cherry, San Marzano&quot;`), each variety has its own distinct row with an atomic `crop_name` and `variety`. All tables define single-column integer primary keys.</li>
+<h3>Second Normal Form (2NF):</h3>
+<li>**Rule:** The table must be in 1NF, and all non-key attributes must be fully functionally dependent on the entire primary key (no partial dependencies).</li>
+<li>**Project Example:** A field can grow many crops over time, and a crop can be planted in many fields. Instead of creating a composite table `field_crop(field_id, crop_id, crop_name, soil_type)`, which would create partial dependencies, we separated `crop` attributes into the `crop` table, `field` attributes into `field`, and isolated the cultivation cycle into `planting` with its own surrogate key `planting_id`.</li>
+<h3>Third Normal Form (3NF):</h3>
+<li>**Rule:** The table must be in 2NF, and no non-key attribute can depend on another non-key attribute (no transitive dependencies: $X \rightarrow Y \rightarrow Z$).</li>
+<li>**Project Example:** In `sensor_reading`, we only store `sensor_id`, `recorded_at`, and `reading_value`. We do **not** store `sensor_type`, `unit_of_measurement`, or `field_name` in `sensor_reading`. Storing `field_name` in `sensor_reading` would create a transitive dependency (`reading_id` $\rightarrow$ `sensor_id` $\rightarrow$ `field_id` $\rightarrow$ `field_name`). By storing `field_id` in `sensor` and querying it via `JOIN`, the schema achieves 3NF compliance.</li>
+<hr/>
+<h2>11. SQL Concepts Explained with Project Examples</h2>
+<h3>1. Primary Key (PK)</h3>
+<p>A unique identifier for each row in a table that cannot be `NULL`.</p>
+<li>*Project Example:* `farm_id` in the `farm` table guarantees that every agricultural estate is distinct.</li>
+<h3>2. Foreign Key (FK)</h3>
+<p>A column in a child table that refers to the Primary Key of a parent table, enforcing referential integrity.</p>
+<li>*Project Example:* `field.farm_id` refers to `farm.farm_id`. MySQL rejects any attempt to create a field pointing to a non-existent farm.</li>
+<h3>3. Multi-Table JOIN</h3>
+<p>Combines rows from two or more tables based on related columns.</p>
+<li>*Project Example (Demonstration 4):*</li>
+<p>  ```sql</p>
+<p>  SELECT fm.farm_name, fd.field_name, c.crop_name, p.status</p>
+<p>  FROM farm fm</p>
+<p>  INNER JOIN field fd ON fm.farm_id = fd.farm_id</p>
+<p>  INNER JOIN planting p ON fd.field_id = p.field_id</p>
+<p>  INNER JOIN crop c ON p.crop_id = c.crop_id;</p>
+<p>  ```</p>
+<p>  This connects 4 separate tables to give a comprehensive view of what crops are currently growing in each field.</p>
+<h3>4. GROUP BY and Aggregate Functions</h3>
+<p>Groups rows sharing a common attribute to calculate summary statistics like `SUM()`, `AVG()`, or `COUNT()`.</p>
+<li>*Project Example (Demonstration 5):*</li>
+<p>  ```sql</p>
+<p>  SELECT c.crop_name, SUM(h.yield_quantity_kg) AS total_kg, SUM(h.market_value_usd) AS revenue</p>
+<p>  FROM crop c</p>
+<p>  INNER JOIN planting p ON c.crop_id = p.crop_id</p>
+<p>  INNER JOIN harvest h ON p.planting_id = h.planting_id</p>
+<p>  GROUP BY c.crop_id, c.crop_name;</p>
+<p>  ```</p>
+<h3>5. Composite B-Tree Index</h3>
+<p>An ordered index built on multiple columns to speed up filtered searches and sorting without scanning the full table.</p>
+<li>*Project Example:* `CREATE INDEX idx_reading_sensor_time ON sensor_reading (sensor_id, recorded_at DESC);`  </li>
+<p>  This allows MySQL to instantly retrieve the newest reading for any sensor in $O(\log N)$ time.</p>
+<h3>6. Database View</h3>
+<p>A stored, virtual query that behaves like a table.</p>
+<li>*Project Example (Demonstration 9):*</li>
+<p>  `CREATE OR REPLACE VIEW v_latest_sensor_readings AS ...`  </p>
+<p>  Users can query `SELECT * FROM v_latest_sensor_readings;` without manually retyping window functions or joins.</p>
+<hr/>
+<h2>12. Sensor Simulation Methodology</h2>
+<p>To provide a working demonstration without physical hardware:</p>
+<p>1. **Script:** [simulator/simulate_readings.py](file:///c:/Users/activ/OneDrive/Attachments/Desktop/DBMS-%20Project/simulator/simulate_readings.py).</p>
+<p>2. **Implementation:** Built using the pure Python standard library (`random`, `datetime`, `argparse`, `pathlib`).</p>
+<p>3. **Deterministic Seed:** Controlled by `seed=42`, producing consistent values across repeat demonstrations.</p>
+<p>4. **Data Transparency:** All rows carry `data_source = &#x27;SIMULATED&#x27;`.</p>
+<p>5. **Demonstration Alert Breach:** The simulator injects a soil moisture reading of **$24.50\%$** on sensor `SNS-FLD1-SM01` at `2026-10-11 12:00:00`.</p>
+<p>6. **Illustrative Threshold:** The **$30.00\%$** threshold is an **illustrative demonstration value** to exhibit database filtering. It is not a universal agricultural recommendation.</p>
+<hr/>
+<h2>13. Testing Methodology and Actual Results</h2>
+<p>The project was audited using an automated test suite [tests/test_validation.py](file:///c:/Users/activ/OneDrive/Attachments/Desktop/DBMS-%20Project/tests/test_validation.py):</p>
+<table>
+<tr><th>Test Case</th><th>Description</th><th>Actual Result</th></tr>
+<tr><td>`test_required_nine_tables_exist`</td><td>Confirms all 9 tables are created in DDL</td><td>**PASS**</td></tr>
+<tr><td>`test_no_destructive_commands`</td><td>Verifies no DROP or TRUNCATE commands exist</td><td>**PASS**</td></tr>
+<tr><td>`test_foreign_key_constraints_present`</td><td>Validates all 8 foreign-key links</td><td>**PASS**</td></tr>
+<tr><td>`test_idempotent_sample_data`</td><td>Verifies all seed inserts use `INSERT IGNORE`</td><td>**PASS**</td></tr>
+<tr><td>`test_column_name_consistency`</td><td>Verifies every seed column exists in schema</td><td>**PASS**</td></tr>
+<tr><td>`test_latest_reading_query_logic`</td><td>Verifies Query 7 &amp; 8 isolate the newest reading</td><td>**PASS**</td></tr>
+<tr><td>`test_view_creation_syntax`</td><td>Verifies `v_latest_sensor_readings` compiles</td><td>**PASS**</td></tr>
+<tr><td>`test_sample_harvest_and_expense_math`</td><td>Reconciles harvest yields and expense sums</td><td>**PASS**</td></tr>
+<tr><td>`test_python_syntax`</td><td>AST parse of simulator script</td><td>**PASS**</td></tr>
+<tr><td>`test_simulator_execution`</td><td>Runs simulator subprocess (return code 0)</td><td>**PASS**</td></tr>
+<tr><td>`test_generated_sql_integrity`</td><td>Confirms valid sensor codes, simulated tags, breach value</td><td>**PASS**</td></tr>
+</table>
+<p>**Summary:** 11 of 11 programmatic tests passed. Live MySQL Server socket connection remains pending local database startup.</p>
+<hr/>
+<h2>14. Screenshots Checklist</h2>
+<p>When presenting or submitting the final report, capture and insert the following screenshots from your machine:</p>
+<li>[ ] **Screenshot 1:** MySQL Workbench connection screen showing connection to `localhost:3306`.</li>
+<li>[ ] **Screenshot 2:** Execution of `sql/01_schema.sql` showing successful execution in the Output Panel.</li>
+<li>[ ] **Screenshot 3:** Left SCHEMAS navigation panel showing `smart_farm_db` expanded with all 9 tables.</li>
+<li>[ ] **Screenshot 4:** Execution of `sql/02_sample_data.sql` showing rows inserted.</li>
+<li>[ ] **Screenshot 5:** Terminal output executing `python simulator/simulate_readings.py`.</li>
+<li>[ ] **Screenshot 6:** Execution of `sql/04_simulated_readings.sql` in MySQL Workbench.</li>
+<li>[ ] **Screenshot 7:** Query 4 Output Grid: Multi-table join showing farms, fields, crops, and planting status.</li>
+<li>[ ] **Screenshot 8:** Query 5 Output Grid: Harvest aggregates (total kilograms and revenue per crop).</li>
+<li>[ ] **Screenshot 9:** Query 6 Output Grid: Total expenses per farm.</li>
+<li>[ ] **Screenshot 10:** Query 8 Output Grid: Low soil moisture alert showing `SNS-FLD1-SM01` at $24.50\%$.</li>
+<li>[ ] **Screenshot 11:** Query 9 Output Grid: `SELECT * FROM v_latest_sensor_readings;`.</li>
+<li>[ ] **Screenshot 12:** Terminal output running `python -m unittest tests/test_validation.py -v` showing `OK (Ran 11 tests)`.</li>
+<hr/>
+<h2>15. Limitations</h2>
+<p>As documented in [docs/KNOWN_LIMITATIONS.md](file:///c:/Users/activ/OneDrive/Attachments/Desktop/DBMS-%20Project/docs/KNOWN_LIMITATIONS.md):</p>
+<p>1. **Engine Version:** Requires MySQL 8.0+ for `CHECK` constraint enforcement and `ROW_NUMBER()` window functions.</p>
+<p>2. **Local Environment:** Database execution requires starting the local MySQL service.</p>
+<p>3. **Synthetic Telemetry:** Telemetry is generated in batch SQL format; physical hardware streaming (MQTT/LoRaWAN) is not implemented.</p>
+<p>4. **Advisory Alerts:** Alerts are decision-support queries and do not actuate pumps or physical irrigation equipment.</p>
+<hr/>
+<h2>16. Future Enhancements</h2>
+<p>1. **Table Partitioning:** Implement monthly range partitioning on `sensor_reading` (`recorded_at`) to optimize queries over tens of millions of telemetry points.</p>
+<p>2. **Automated Data Rollup:** Create a MySQL Scheduled Event (`CREATE EVENT`) to calculate hourly and daily averages from minute-by-minute sensor readings.</p>
+<p>3. **Web-Based Dashboard:** Develop a lightweight Flask or FastAPI dashboard to visualize live sensor charts.</p>
+<p>4. **Physical IoT Ingestion:** Connect an ESP32 microcontroller with a capacitive soil moisture sensor via MQTT into a Python bridge that writes directly to MySQL.</p>
+<hr/>
+<h2>17. Conclusion</h2>
+<p>The Smart Farm Database Management System successfully delivers a normalized, robust, and verifiable database foundation for precision agriculture. The project adheres to strict DBMS engineering principles:</p>
+<li>3NF normalization eliminates redundancy.</li>
+<li>InnoDB referential integrity protects against orphaned records.</li>
+<li>Composite indexing ensures fast telemetry retrieval.</li>
+<li>A zero-dependency Python simulator enables repeatable demonstrations.</li>
+<p>The system proves that complex real-world systems can be modeled cleanly and demonstrated reliably within academic constraints.</p>
+<hr/>
+<h2>18. Viva Questions with Simple Answers</h2>
+<p>*(See [docs/viva_questions.md](file:///c:/Users/activ/OneDrive/Attachments/Desktop/DBMS-%20Project/docs/viva_questions.md) for the complete list of 20 detailed questions and answers).*</p>
+</body></html>

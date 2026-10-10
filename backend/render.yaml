@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: smart-farm-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        value: smart_farm_db
+      - key: DB_CONNECTION_LIMIT
+        value: 10
+      - key: CORS_ORIGIN
+        sync: false
+      - key: DEFAULT_MOISTURE_ALERT_THRESHOLD
+        value: 30.0

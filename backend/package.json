@@ -1,0 +1,31 @@
+{
+  "name": "smart-farm-backend",
+  "version": "1.0.0",
+  "description": "Smart Farm Database Management System REST API Backend",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test tests/**/*.test.js"
+  },
+  "keywords": [
+    "smart-farm",
+    "dbms",
+    "mysql",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^5.0.0",
+    "helmet": "^8.0.0",
+    "mysql2": "^3.11.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
+  }
+}
