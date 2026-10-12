@@ -53,7 +53,9 @@ export default function Header({ onOpenSidebar }) {
           {health.status === 'healthy' && health.database?.connected ? (
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="hidden md:inline font-mono">MySQL 8.x Connected</span>
+              <span className="hidden md:inline font-mono">
+                {health.database?.version ? `${health.database.version} Connected` : 'DB Connected'}
+              </span>
               <span className="md:hidden">DB Online</span>
             </div>
           ) : health.status === 'degraded' ? (

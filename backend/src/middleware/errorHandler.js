@@ -29,6 +29,34 @@ export function errorHandler(err, req, res, next) {
     return errorResponse(res, err.message, err.statusCode, err.code, err.details);
   }
 
+  // Handle SQLite constraint and DB errors
+  if (err.message && typeof err.message === 'string') {
+    if (err.message.includes('UNIQUE constraint failed')) {
+      return errorResponse(
+        res,
+        'Duplicate entry: a record with these unique values already exists.',
+        409,
+        'DUPLICATE_ENTRY'
+      );
+    }
+    if (err.message.includes('FOREIGN KEY constraint failed')) {
+      return errorResponse(
+        res,
+        'Referential integrity conflict: cannot modify or delete record due to related foreign key constraints.',
+        409,
+        'FOREIGN_KEY_CONFLICT'
+      );
+    }
+    if (err.message.includes('CHECK constraint failed')) {
+      return errorResponse(
+        res,
+        'Check constraint violated: one or more values exceed allowed boundaries.',
+        400,
+        'CHECK_CONSTRAINT_VIOLATED'
+      );
+    }
+  }
+
   // Handle MySQL errors safely without leaking sensitive server info
   if (err.code) {
     switch (err.code) {
@@ -65,7 +93,7 @@ export function errorHandler(err, req, res, next) {
       case 'PROTOCOL_CONNECTION_LOST':
         return errorResponse(
           res,
-          'Database connectivity is currently unavailable. Please verify MySQL service and credentials.',
+          'Database connectivity is currently unavailable. Please verify database service.',
           503,
           'DATABASE_UNAVAILABLE'
         );

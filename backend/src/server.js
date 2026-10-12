@@ -11,11 +11,12 @@ async function startServer() {
   // Verify database connection at startup
   const dbHealth = await checkConnection();
   if (dbHealth.connected) {
-    console.log(`✅ [Database] Connected successfully to MySQL (${dbHealth.database} @ ${process.env.DB_HOST}:${process.env.DB_PORT || 3306})`);
-    console.log(`ℹ️ [Database] MySQL Server Version: ${dbHealth.version}`);
+    const dbType = dbHealth.type === 'sqlite' ? 'SQLite' : 'MySQL';
+    console.log(`✅ [Database] Connected successfully to ${dbType} (${dbHealth.database})`);
+    console.log(`ℹ️ [Database] Engine Version: ${dbHealth.version}`);
   } else {
     console.warn(`⚠️ [Database Warning] ${dbHealth.message}`);
-    console.warn('ℹ️ [Database Note] API is running in degraded mode. Please configure DB_PASSWORD in backend/.env.');
+    console.warn('ℹ️ [Database Note] API is running in degraded mode.');
   }
 
   const server = app.listen(PORT, () => {
